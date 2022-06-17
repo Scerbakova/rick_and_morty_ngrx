@@ -9,11 +9,13 @@ import { DOCUMENT } from '@angular/common';
   templateUrl: './characters.component.html',
   styleUrls: ['./characters.component.scss'],
 })
+
 export class CharactersComponent implements OnInit {
   characters: Character[] = [];
   info: Info | undefined
 
   showButton = false;
+
   private page = 1;
   private hideScrollHeight = 200;
   private showScrollHeight = 500;
@@ -30,6 +32,7 @@ export class CharactersComponent implements OnInit {
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
     const yOffSet = window.pageYOffset;
+
     if (
       (yOffSet ||
         this.document.documentElement.scrollTop ||
@@ -72,3 +75,5 @@ export class CharactersComponent implements OnInit {
       });
   }
 }
+
+
