@@ -1,17 +1,44 @@
-import { createReducer, on } from "@ngrx/store";
-import { loadCharactersSuccess } from "./characters.actions";
-import { CharacterApiRespone } from "src/app/interface/character";
+import { createReducer, on } from '@ngrx/store';
+import * as CharactersActions from './characters.actions';
+import { CharacterApiRespone, Info } from 'src/app/interface/character';
 
-export interface charactersState {
-  [id: number]: CharacterApiRespone;
+export interface State {
+  loading: boolean;
+  characters: CharacterApiRespone["results"];
+  error: string;
+  info: Info | undefined
 }
 
-const initialState: charactersState = [];
+export const initialState: State = {
+  loading: false,
+  characters: [],
+  error: '',
+  info: undefined,
+};
 
-export const CharactersReducer = createReducer(initialState, on(loadCharactersSuccess, (state, {characters}) => {
-  return {
-    ...state,
-    initialState: characters
-  };
-})
+export const CharactersReducer = createReducer(
+  initialState,
+  on(CharactersActions.getCharacters, (state) => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+
+  on(CharactersActions.loadCharactersSuccess, (state, { characters, info }) => {
+    return {
+      ...state,
+      loading: false,
+      characters: [...state.characters, ...characters],
+      info: info
+    };
+  }),
+
+  on(CharactersActions.loadCharactersError, (state, { error }) => {
+    return {
+      ...state,
+      loading: false,
+      error: error.message, characters: [],
+    };
+  })
 );

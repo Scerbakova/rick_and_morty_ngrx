@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { CharactersComponent } from './components/characters/characters.component';
 import { CharactersReducer } from './components/state/characters.reducer';
 import { EffectsModule } from '@ngrx/effects';
+import { CharactersEffects } from './components/state/characters.effects';
 
 @NgModule({
   declarations: [AppComponent, CharactersComponent],
@@ -17,7 +18,7 @@ import { EffectsModule } from '@ngrx/effects';
     HttpClientModule,
     InfiniteScrollModule,
     StoreModule.forRoot({ characters: CharactersReducer }),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([CharactersEffects]),
   ],
   providers: [],
   bootstrap: [AppComponent],

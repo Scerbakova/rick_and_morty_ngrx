@@ -1,3 +1,3 @@
-import {charactersState} from './characters.reducer';
+import {State} from './characters.reducer';
 
-export type AppState = charactersState;
+export type AppState = State;

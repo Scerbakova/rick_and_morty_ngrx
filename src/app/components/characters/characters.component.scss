@@ -1,9 +1,17 @@
+.card {
+  background-color: #01050c;
+  color: white;
+}
+
 .card-inner {
   padding: 20px;
 }
-.title {
+
+.title, .loading {
   text-align: center;
+  color: white;
 }
+
 .visible {
   position: fixed;
   bottom: 15px;

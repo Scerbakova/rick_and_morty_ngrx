@@ -1,8 +1,9 @@
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { Character, Info } from 'src/app/interface/character';
-import { RickAndMortyService } from 'src/app/service/rick-and-morty.service';
-import { take } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
+import { Store } from '@ngrx/store';
+import * as CharacterSelector from '../state/characters.selectors'
+import * as CharactersActions from '../state/characters.actions'
 
 @Component({
   selector: 'app-characters',
@@ -14,6 +15,11 @@ export class CharactersComponent implements OnInit {
   characters: Character[] = [];
   info: Info | undefined
 
+  characters$ = this.store.select(CharacterSelector.selectAllCharacters);
+  loading$ = this.store.select(CharacterSelector.selectLoading);
+  error$ = this.store.select(CharacterSelector.selectError);
+  info$ = this.store.select(CharacterSelector.selectInfo);
+
   showButton = false;
 
   private page = 1;
@@ -21,12 +27,12 @@ export class CharactersComponent implements OnInit {
   private showScrollHeight = 500;
 
   constructor(
-    private characterService: RickAndMortyService,
+    private store: Store,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.getCharactersFromService();
+    this.store.dispatch(CharactersActions.getCharacters({ page: this.page }));
   }
 
   @HostListener('window:scroll', [])
@@ -49,30 +55,15 @@ export class CharactersComponent implements OnInit {
     }
   }
 
-  onScrollDown(): void {
-    if (this.info?.next) {
+  onScrollDown(infoNext: string): void {
+    if (infoNext) {
       this.page++;
-      this.getCharactersFromService();
+      this.store.dispatch(CharactersActions.getCharacters({ page: this.page }))
     }
   }
 
   onScrollTop(): void {
     this.document.documentElement.scrollTop = 0;
-  }
-
-  private getCharactersFromService(): void {
-    this.characterService
-      .getCharacters(this.page)
-      .pipe(take(1))
-      .subscribe((res) => {
-        if (res?.results?.length) {
-          const { info, results } = res;
-          this.characters = [...this.characters, ...results];
-          this.info = info;
-        } else {
-          this.characters = [];
-        }
-      });
   }
 }
 
